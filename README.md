@@ -51,7 +51,7 @@ Fields:
 
 ### Load Balancing Strategy
 
-We use a Layer 7 load balancer because it understands HTTP-level data like paths and headers, which is essential for API-based systems. It distributes traffic across multiple API instances to ensure scalability and high availability. It also integrates well with API Gateway features like authentication, rate limiting, and logging.
+We use a load balancer. It also integrates well with API Gateway features like authentication, rate limiting, and logging.
 
 ### API Gateway
 
@@ -84,7 +84,6 @@ The Document Consumer consumes document events from Kafka and performs dual writ
 For each event, the consumer deserializes the Protobuf message and compares the incoming `Version` with the stored version. If a newer version already exists, the older event is discarded to prevent stale updates. Otherwise, the document is written to **Cassandra** (the source of truth), indexed into **Elasticsearch**, and any cached entries associated with the document are invalidated to ensure subsequent reads return the latest version.
 
 If either write fails, the consumer retries the operation before acknowledging the Kafka message. The service can be scaled horizontally by adding more consumer instances, with Kafka automatically distributing partitions across the consumer group. In a production environment, dedicated consumer instances or consumer groups can also be allocated to high-volume tenants, preventing them from impacting the performance of other tenants while allowing independent scaling based on tenant workload.
-
 
 ### Cassandra 
 
